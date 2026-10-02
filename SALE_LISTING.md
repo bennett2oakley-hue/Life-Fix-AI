@@ -1,14 +1,20 @@
 # LIFE FIX AI - FOR SALE
 
-## Short listing title
+## Listing position
 
-**Life Fix AI - Working Practical Problem-Solving SaaS MVP**
+**Life Fix AI - Working Consumer Problem-Solving SaaS / AI-Ready MVP**
 
 ## Asking price
 
-**$4,995 USD**
+**$29,500 USD**
 
-Open to reasonable offers from a buyer who wants to take over the product and finish the AI/cloud layer.
+Open to serious offers. The target is to sell the complete software asset and transfer the project to a buyer who wants a ready-made foundation rather than starting from zero.
+
+### Recommended marketplace category
+
+**Projects & Concepts / Working MVP**
+
+This positioning is intentional: the current product is functional and transferable, but it is pre-revenue. Do not present it as an established revenue-generating SaaS.
 
 ## What the buyer gets
 
@@ -28,9 +34,17 @@ Open to reasonable offers from a buyer who wants to take over the product and fi
 - Individual delete and clear-history controls
 - Copy-plan and download-plan features
 - GitHub source repository
-- Live demo/deployment
+- Public demo/deployment
 - README and buyer handoff documentation
-- Clean path for a buyer to add accounts, cloud persistence, AI APIs, analytics and billing
+- Clear roadmap for accounts, cloud persistence, server-side AI, analytics and billing
+
+## Why the asset is being sold at this level
+
+The buyer is acquiring more than a concept or landing page. The core consumer workflow is already built, branded, responsive and usable.
+
+The product gives a buyer a starting point for a broader consumer AI/problem-solving service without requiring them to design the entire interface, information architecture, brand, intake flow and first-generation problem-solving engine from scratch.
+
+The current codebase is intentionally lightweight and has no required central database for user fix history.
 
 ## Product positioning
 
@@ -38,27 +52,26 @@ Life Fix AI is designed around a simple consumer problem: people often know some
 
 The product asks the user to describe the problem and returns a practical sequence of next actions instead of a wall of generic information.
 
-The current build is intentionally lightweight and privacy-conscious. User problem history is stored locally in the browser rather than sent to a central database.
+The current build is privacy-conscious. User problem history is stored locally in the browser rather than sent to a central database.
 
 ## Current status
 
 **Working MVP / pre-revenue.**
 
-The current problem-solving engine is deterministic rule-based guidance. It is not being represented as a live generative-AI service yet.
+The current problem-solving engine is deterministic rule-based guidance. It is not being represented as a live generative-AI service.
 
-No revenue, customer count, traffic, or profitability should be claimed unless separately verified.
+There are currently no verified revenue, customer, traffic, profit, retention or usage claims attached to this listing.
 
-## Live demo
+## Live product
 
-https://ghosted-logic-j9cy7nc.shipstatic.com
+A published preview is available through the current deployment/project setup.
 
-## Source
-
+GitHub source of record:
 https://github.com/bennett2oakley-hue/Life-Fix-AI
 
 ## Buyer opportunity
 
-A buyer can add:
+A buyer can extend the existing foundation with:
 
 1. Secure user accounts
 2. Cloud-synced saved plans
@@ -71,14 +84,14 @@ A buyer can add:
 9. Affiliate/referral partnerships
 10. Mobile packaging if desired
 
-## Reason for sale
+## Transfer
 
-Selling the project as a ready-made foundation so another operator can take over development, monetization and marketing.
+The sale can include the source repository, current deployment information, product documentation, brand/design assets contained in the repository, and a reasonable technical transition period.
 
-## Suggested buyer handoff
-
-Transfer the repository and deployment, provide the product documentation, explain the current architecture, and provide a short transition period for technical questions.
+Personal credentials and unrelated accounts are not transferred.
 
 ## Important disclosure
 
-This is a software asset sale, not a claim of an established revenue-generating business. Buyers should perform their own technical and legal due diligence before purchase.
+This is a software asset / working MVP sale, not a claim of an established revenue-generating business. Buyers should perform their own technical, legal and commercial due diligence before purchase.
+
+No medical, legal, financial, emergency or professional-advice claims should be made for the current product.
