@@ -5,7 +5,7 @@
 ## Current product
 
 - Responsive web app
-- Selected Life Fix AI dark/teal branding and custom wrench + sparkle icon
+- Life Fix AI dark/teal branding and custom wrench + sparkle icon
 - Problem intake with categories
 - Safety-aware routing for potentially dangerous situations
 - Practical plans for home, money, work, technology and travel problems
@@ -16,9 +16,11 @@
 - No advertising
 - No server-side storage of user problem history in the current build
 
-## Important product boundary
+## Product status
 
-The current production build is a client-side MVP. Its problem-solving engine is deterministic rule-based guidance, not a connected generative-AI backend. A buyer can operate it as-is or connect an AI provider/backend later.
+The current production build is a **working client-side MVP / pre-revenue software asset**.
+
+Its problem-solving engine is deterministic rule-based guidance, not a connected generative-AI backend. A buyer can operate the product as-is or add a secure server-side AI provider later.
 
 Do not market the current build as providing medical, legal, financial, emergency, or professional advice.
 
@@ -26,20 +28,21 @@ Do not market the current build as providing medical, legal, financial, emergenc
 
 React 19, TypeScript, Vite, CSS, localStorage.
 
-## Live demo
+## Live product and source
 
-Current ShipStatic demo: https://ghosted-logic-j9cy7nc.shipstatic.com
+The source of record is:
 
-The GitHub source of record is:
 https://github.com/bennett2oakley-hue/Life-Fix-AI
+
+The product has also been published through the existing app deployment workflow. Deployment credentials and account ownership are handled separately during a buyer transfer.
 
 ## Buyer handoff
 
-The sale can include the source repository, live demo, brand/design assets contained in the repository, deployment information, and reasonable transition documentation. Revenue, customers, traffic, and other metrics should be represented as zero or pre-revenue unless independently verified.
+The sale can include the source repository, deployment information, brand/design assets contained in the repository, and transition documentation. Revenue, customers, traffic and profitability are pre-revenue/zero unless independently verified.
 
 ## Local development
 
-Install dependencies with Bun and run:
+Install dependencies with Bun:
 
 ```bash
 bun install
@@ -57,5 +60,5 @@ bun run build
 1. Add authenticated accounts and cloud-saved plans.
 2. Add a secure server-side AI provider integration.
 3. Add subscription billing and usage limits.
-4. Add analytics with privacy-conscious event tracking.
+4. Add privacy-conscious analytics.
 5. Add a structured knowledge base and source citations for higher-risk categories.
