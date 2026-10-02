@@ -26,9 +26,20 @@ const categories = [
 function readHistory(): Fix[] {
   try {
     const saved = localStorage.getItem("life-fix-history");
-    return saved ? JSON.parse(saved) : [];
+    if (!saved) return [];
+    const parsed = JSON.parse(saved);
+    return Array.isArray(parsed) ? parsed : [];
   } catch {
     return [];
+  }
+}
+
+function writeHistory(history: Fix[]) {
+  try {
+    localStorage.setItem("life-fix-history", JSON.stringify(history));
+    return true;
+  } catch {
+    return false;
   }
 }
 
@@ -149,7 +160,9 @@ function downloadFix(fix: Fix) {
   const a = document.createElement("a");
   a.href = url;
   a.download = "life-fix-plan.txt";
+  document.body.appendChild(a);
   a.click();
+  a.remove();
   URL.revokeObjectURL(url);
 }
 
@@ -165,7 +178,7 @@ export default function App() {
   function save(fix: Fix) {
     const next = [fix, ...history.filter((item) => item.id !== fix.id)].slice(0, 50);
     setHistory(next);
-    localStorage.setItem("life-fix-history", JSON.stringify(next));
+    writeHistory(next);
   }
 
   function submit(event: FormEvent) {
@@ -188,13 +201,17 @@ export default function App() {
   function deleteFix(id: string) {
     const next = history.filter((fix) => fix.id !== id);
     setHistory(next);
-    localStorage.setItem("life-fix-history", JSON.stringify(next));
+    writeHistory(next);
     if (active?.id === id) setActive(null);
   }
 
   function clearHistory() {
     setHistory([]);
-    localStorage.removeItem("life-fix-history");
+    try {
+      localStorage.removeItem("life-fix-history");
+    } catch {
+      // Storage may be unavailable in privacy-restricted browser modes.
+    }
     setActive(null);
   }
 
