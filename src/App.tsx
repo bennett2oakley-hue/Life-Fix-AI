@@ -202,7 +202,7 @@ export default function App() {
     <div className="app">
       <header className="topbar">
         <button className="brand" onClick={() => { setActive(null); setShowHistory(false); }} aria-label="Life Fix AI home">
-          <span className="brand-mark" aria-hidden="true">🔧</span>
+          <span className="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M19.8 5.2a7 7 0 0 0-8.1 8.1l-6.1 6.1a3.2 3.2 0 0 0 4.5 4.5l6.1-6.1a7 7 0 0 0 8.1-8.1l-4.2 4.2-4.3-1.2-1.2-4.3 4.2-3.2Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="m24.8 4.2.7 2.2 2.3.7-2.3.7-.7 2.2-.7-2.2-2.3-.7 2.3-.7.7-2.2Z" fill="currentColor"/></svg></span>
           <span>Life Fix <b>AI</b></span>
         </button>
         <nav>
@@ -215,8 +215,8 @@ export default function App() {
         {!showHistory && !active && (
           <section className="hero">
             <div className="eyebrow">PRACTICAL HELP, WITHOUT THE RUNAROUND</div>
-            <h1>Got a problem?<br /><span>Let's fix it.</span></h1>
-            <p className="hero-copy">Tell Life Fix AI what is going wrong. Get a clear plan, the next steps, and the things to watch out for.</p>
+            <h1>When life feels broken,<br /><span>let's fix what we can.</span></h1>
+            <p className="hero-copy">When life needs fixing, Life Fix AI helps you turn everyday problems into clear, practical next steps.</p>
 
             <form className="fix-card" onSubmit={submit}>
               <label htmlFor="problem">What are you dealing with?</label>
