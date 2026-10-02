@@ -12,18 +12,25 @@ type Fix = {
   watch: string[];
 };
 
-const starterFixes: Fix[] = JSON.parse(localStorage.getItem("life-fix-history") || "[]");
-
 const categories = [
-  "Home & Repairs",
-  "Money & Bills",
-  "Work & Jobs",
-  "Technology",
-  "Travel",
-  "Relationships",
-  "Organization",
-  "Other",
-];
+  ["Home & Repairs", "🔧", "Leaks, repairs, appliances, rooms"],
+  ["Money & Bills", "💵", "Bills, payments, debt, budgeting"],
+  ["Work & Jobs", "💼", "Job searches, work problems, next steps"],
+  ["Technology", "💻", "Phones, accounts, Wi-Fi, apps"],
+  ["Travel", "🧳", "Trips, bookings, travel problems"],
+  ["Relationships", "💬", "Communication and difficult situations"],
+  ["Organization", "📋", "Tasks, clutter, planning, routines"],
+  ["Other", "🧰", "Anything that does not fit a category"],
+] as const;
+
+function readHistory(): Fix[] {
+  try {
+    const saved = localStorage.getItem("life-fix-history");
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+}
 
 function makeFix(problem: string, category: string): Fix {
   const text = problem.toLowerCase();
@@ -31,6 +38,8 @@ function makeFix(problem: string, category: string): Fix {
   const money = category === "Money & Bills" || /bill|rent|debt|money|payment|cash/.test(text);
   const home = category === "Home & Repairs" || /leak|plumb|toilet|sink|water|heater|roof|wall|door|electric|breaker/.test(text);
   const tech = category === "Technology" || /phone|computer|wifi|internet|app|password|account|login/.test(text);
+  const work = category === "Work & Jobs" || /job|work|resume|interview|employer|boss/.test(text);
+  const travel = category === "Travel" || /hotel|flight|trip|travel|reservation|airport/.test(text);
 
   let title = "A practical plan for your problem";
   let summary = "Let's turn the problem into a few manageable actions, starting with the safest and simplest option.";
@@ -85,6 +94,26 @@ function makeFix(problem: string, category: string): Fix {
       "If an account is involved, use the service's official recovery or support process rather than sharing your password.",
     ];
     watch = ["Never give Life Fix AI or anyone else your passwords, verification codes, or recovery phrases."];
+  } else if (work) {
+    title = "Turn the work problem into a next move";
+    summary = "Get clear on the immediate goal, then create one small action you can complete today.";
+    steps = [
+      "Define the immediate outcome you need: a job lead, interview, conversation, deadline, or problem resolution.",
+      "Gather the information you need before contacting anyone, such as your resume, dates, account details, or notes.",
+      "Take one direct action today, such as applying, following up, asking a clear question, or documenting the issue.",
+      "Keep a short record of who you contacted, when, and what the next step is.",
+    ];
+    watch = ["Do not share sensitive personal information with an unverified employer or recruiter."];
+  } else if (travel) {
+    title = "Get the travel problem under control";
+    summary = "Separate what must be fixed immediately from what can wait until after you are safely on your way.";
+    steps = [
+      "Confirm the reservation, booking number, time, location, and the exact problem.",
+      "Contact the official provider first and ask for the available recovery options.",
+      "Keep screenshots, receipts, confirmation numbers, and names of representatives you speak with.",
+      "If you are stranded or unsafe, prioritize transportation and a safe place to stay before cost optimization.",
+    ];
+    watch = ["Use official airline, hotel, rental, or transportation contact channels when handling account or payment information."];
   }
 
   return {
@@ -100,17 +129,41 @@ function makeFix(problem: string, category: string): Fix {
   };
 }
 
+function downloadFix(fix: Fix) {
+  const lines = [
+    "LIFE FIX AI",
+    fix.title,
+    "",
+    `Problem: ${fix.problem}`,
+    `Category: ${fix.category}`,
+    `Priority: ${fix.urgency}`,
+    "",
+    "PLAN",
+    ...fix.steps.map((step, i) => `${i + 1}. ${step}`),
+    "",
+    "WATCH OUT FOR",
+    ...fix.watch.map((item) => `• ${item}`),
+  ];
+  const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "life-fix-plan.txt";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function App() {
   const [problem, setProblem] = useState("");
   const [category, setCategory] = useState("Other");
-  const [history, setHistory] = useState<Fix[]>(starterFixes);
+  const [history, setHistory] = useState<Fix[]>(readHistory);
   const [active, setActive] = useState<Fix | null>(null);
   const [showHistory, setShowHistory] = useState(false);
 
   const recent = useMemo(() => history.slice(0, 5), [history]);
 
   function save(fix: Fix) {
-    const next = [fix, ...history].slice(0, 25);
+    const next = [fix, ...history.filter((item) => item.id !== fix.id)].slice(0, 50);
     setHistory(next);
     localStorage.setItem("life-fix-history", JSON.stringify(next));
   }
@@ -121,7 +174,22 @@ export default function App() {
     const fix = makeFix(problem.trim(), category);
     save(fix);
     setActive(fix);
+    setShowHistory(false);
     setProblem("");
+  }
+
+  function chooseCategory(nextCategory: string) {
+    setCategory(nextCategory);
+    setShowHistory(false);
+    setActive(null);
+    document.getElementById("problem")?.focus();
+  }
+
+  function deleteFix(id: string) {
+    const next = history.filter((fix) => fix.id !== id);
+    setHistory(next);
+    localStorage.setItem("life-fix-history", JSON.stringify(next));
+    if (active?.id === id) setActive(null);
   }
 
   function clearHistory() {
@@ -134,12 +202,12 @@ export default function App() {
     <div className="app">
       <header className="topbar">
         <button className="brand" onClick={() => { setActive(null); setShowHistory(false); }} aria-label="Life Fix AI home">
-          <span className="brand-mark">🔧</span>
+          <span className="brand-mark" aria-hidden="true">🔧</span>
           <span>Life Fix <b>AI</b></span>
         </button>
         <nav>
-          <button onClick={() => setShowHistory(false)}>New fix</button>
-          <button onClick={() => setShowHistory(true)}>My fixes{history.length ? ` (${history.length})` : ""}</button>
+          <button onClick={() => { setActive(null); setShowHistory(false); }}>New fix</button>
+          <button onClick={() => { setActive(null); setShowHistory(true); }}>My fixes{history.length ? ` (${history.length})` : ""}</button>
         </nav>
       </header>
 
@@ -152,20 +220,27 @@ export default function App() {
 
             <form className="fix-card" onSubmit={submit}>
               <label htmlFor="problem">What are you dealing with?</label>
-              <textarea
-                id="problem"
-                value={problem}
-                onChange={(e) => setProblem(e.target.value)}
-                placeholder="Example: My kitchen sink is draining slowly and I don't know what to try first."
-                rows={5}
-              />
+              <textarea id="problem" value={problem} onChange={(e) => setProblem(e.target.value)} placeholder="Example: My kitchen sink is draining slowly and I don't know what to try first." rows={5} />
               <div className="form-row">
                 <select value={category} onChange={(e) => setCategory(e.target.value)} aria-label="Problem category">
-                  {categories.map((item) => <option key={item}>{item}</option>)}
+                  {categories.map(([name]) => <option key={name}>{name}</option>)}
                 </select>
                 <button className="primary" disabled={!problem.trim()}>Build my fix →</button>
               </div>
             </form>
+
+            <div className="category-section">
+              <div className="section-head"><h2>Start with a category</h2><span>Tap one to get going</span></div>
+              <div className="category-grid">
+                {categories.map(([name, icon, description]) => (
+                  <button className="category-card" key={name} onClick={() => chooseCategory(name)}>
+                    <span className="category-icon">{icon}</span>
+                    <strong>{name}</strong>
+                    <small>{description}</small>
+                  </button>
+                ))}
+              </div>
+            </div>
 
             <div className="safety"><span>⚠️</span><span><b>Safety first:</b> Life Fix AI provides general information, not emergency, medical, legal, financial, or professional advice.</span></div>
 
@@ -195,20 +270,29 @@ export default function App() {
               <article className="panel"><h2>✓ Step-by-step plan</h2><ol>{active.steps.map((step, i) => <li key={step}><span>{i + 1}</span><p>{step}</p></li>)}</ol></article>
               <article className="panel"><h2>⚠ Things to watch</h2><ul>{active.watch.map((item) => <li key={item}>{item}</li>)}</ul></article>
             </div>
-            <button className="primary" onClick={() => setActive(null)}>Fix another problem</button>
+            <div className="result-actions">
+              <button className="secondary" onClick={() => downloadFix(active)}>Save plan to device</button>
+              <button className="secondary" onClick={() => { navigator.clipboard?.writeText([`LIFE FIX AI: ${active.title}`, `Problem: ${active.problem}`, "", "PLAN", ...active.steps.map((s, i) => `${i + 1}. ${s}`), "", "WATCH OUT FOR", ...active.watch].join("\n")); }}>Copy plan</button>
+              <button className="primary" onClick={() => { setActive(null); setShowHistory(false); }}>Fix another problem</button>
+            </div>
           </section>
         )}
 
         {showHistory && (
           <section className="history">
             <div className="section-head"><div><div className="eyebrow">YOUR SAVED FIXES</div><h1>Fix history</h1></div>{history.length > 0 && <button className="danger-text" onClick={clearHistory}>Clear history</button>}</div>
-            {history.length === 0 ? <div className="empty"><div>🧰</div><h2>No saved fixes yet</h2><p>Your fixes will stay on this device so you can come back to them.</p><button className="primary" onClick={() => setShowHistory(false)}>Create your first fix</button></div> :
-              <div className="history-list">{history.map((fix) => <button className="history-item" key={fix.id} onClick={() => { setActive(fix); setShowHistory(false); }}><div><span className="pill">{fix.category}</span><h2>{fix.title}</h2><p>{fix.problem}</p></div><span>→</span></button>)}</div>}
+            {history.length === 0 ? <div className="empty"><div>🧰</div><h2>No saved fixes yet</h2><p>Your fixes stay on this device so you can come back to them.</p><button className="primary" onClick={() => setShowHistory(false)}>Create your first fix</button></div> :
+              <div className="history-list">{history.map((fix) => (
+                <div className="history-item" key={fix.id}>
+                  <button className="history-open" onClick={() => { setActive(fix); setShowHistory(false); }}><div><span className="pill">{fix.category}</span><h2>{fix.title}</h2><p>{fix.problem}</p></div><span>→</span></button>
+                  <button className="delete" onClick={() => deleteFix(fix.id)} aria-label={`Delete ${fix.title}`}>×</button>
+                </div>
+              ))}</div>}
           </section>
         )}
       </main>
 
-      <footer><div><b>Life Fix <span>AI</span></b><p>Practical, step-by-step help for everyday problems.</p></div><p>© {new Date().getFullYear()} Life Fix AI · Your information stays in this browser.</p></footer>
+      <footer><div><b>Life Fix <span>AI</span></b><p>Practical, step-by-step help for everyday problems.</p></div><p>© {new Date().getFullYear()} Life Fix AI · Your fixes stay in this browser.</p></footer>
     </div>
   );
 }
