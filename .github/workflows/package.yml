@@ -20,12 +20,11 @@ jobs:
           rm -rf package
           mkdir package
           rsync -a --exclude='.git' --exclude='package' --exclude='node_modules' ./ package/
-          cd package
-          zip -r ../life-fix-ai-sale-package.zip . -x '*.DS_Store'
       - name: Upload sale package
         uses: actions/upload-artifact@v4
         with:
           name: life-fix-ai-sale-package
-          path: life-fix-ai-sale-package.zip
+          path: package
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 90
