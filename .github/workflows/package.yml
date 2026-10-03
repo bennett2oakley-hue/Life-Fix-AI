@@ -1,0 +1,31 @@
+name: Build Life Fix AI Sale Package
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Create clean sale package
+        run: |
+          rm -rf package
+          mkdir package
+          rsync -a --exclude='.git' --exclude='package' --exclude='node_modules' ./ package/
+          cd package
+          zip -r ../life-fix-ai-sale-package.zip . -x '*.DS_Store'
+      - name: Upload sale package
+        uses: actions/upload-artifact@v4
+        with:
+          name: life-fix-ai-sale-package
+          path: life-fix-ai-sale-package.zip
+          if-no-files-found: error
+          retention-days: 90
