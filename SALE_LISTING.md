@@ -34,7 +34,7 @@ This positioning is intentional: the current product is functional and transfera
 - Individual delete and clear-history controls
 - Copy-plan and download-plan features
 - GitHub source repository
-- Public demo/deployment
+- Public Render demo/deployment
 - README and buyer handoff documentation
 - Clear roadmap for accounts, cloud persistence, server-side AI, analytics and billing
 
@@ -64,10 +64,13 @@ There are currently no verified revenue, customer, traffic, profit, retention or
 
 ## Live product
 
-A published preview is available through the current deployment/project setup.
+Live demo:
+https://life-fix-ai.onrender.com
 
 GitHub source of record:
 https://github.com/bennett2oakley-hue/Life-Fix-AI
+
+The demo is hosted independently of ShipStatic.
 
 ## Buyer opportunity
 
