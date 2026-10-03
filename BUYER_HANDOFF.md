@@ -10,7 +10,9 @@ https://github.com/bennett2oakley-hue/Life-Fix-AI
 
 ## Live demo
 
-https://ghosted-logic-j9cy7nc.shipstatic.com
+https://life-fix-ai.onrender.com
+
+The current demo is deployed as a Render static site from the main GitHub repository. The app does not depend on ShipStatic.
 
 ## Architecture
 
@@ -58,7 +60,7 @@ Add a small server-side API layer for AI generation. Keep API keys server-side. 
 ## Transfer checklist
 
 - Transfer GitHub repository ownership or grant buyer repository access.
-- Transfer the production hosting/deployment account or deployment ownership.
+- Transfer the Render static-site service or recreate it from the repository.
 - Transfer any domain separately if a domain is purchased later.
 - Rotate any secrets before handoff.
 - Do not transfer personal credentials.
