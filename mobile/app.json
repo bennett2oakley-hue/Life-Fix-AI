@@ -7,20 +7,9 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "scheme": "life-fix-ai",
-    "android": {
-      "package": "com.bennett2oakley.lifefixai",
-      "versionCode": 1
-    },
-    "ios": {
-      "bundleIdentifier": "com.bennett2oakley.lifefixai",
-      "supportsTablet": true
-    },
-    "web": {
-      "bundler": "metro"
-    },
-    "plugins": ["react-native-webview"],
-    "extra": {
-      "productionUrl": "https://life-fix-ai.onrender.com"
-    }
+    "android": {"package": "com.bennett2oakley.lifefixai", "versionCode": 1},
+    "ios": {"bundleIdentifier": "com.bennett2oakley.lifefixai", "supportsTablet": true},
+    "web": {"bundler": "metro"},
+    "extra": {"productionUrl": "https://life-fix-ai.onrender.com"}
   }
 }
