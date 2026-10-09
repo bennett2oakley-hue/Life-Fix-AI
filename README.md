@@ -30,15 +30,11 @@ React 19, TypeScript, Vite, CSS, localStorage.
 
 ## Live product and source
 
-The source of record is:
+- Live demo: https://life-fix-ai.onrender.com
+- Source of record: https://github.com/bennett2oakley-hue/Life-Fix-AI
+- Buyer transfer and acceptance checklist: [BUYER_HANDOFF.md](BUYER_HANDOFF.md)
 
-https://github.com/bennett2oakley-hue/Life-Fix-AI
-
-The product has also been published through the existing app deployment workflow. Deployment credentials and account ownership are handled separately during a buyer transfer.
-
-## Buyer handoff
-
-The sale can include the source repository, deployment information, brand/design assets contained in the repository, and transition documentation. Revenue, customers, traffic and profitability are pre-revenue/zero unless independently verified.
+The product has been published through the existing app deployment workflow. Deployment credentials and account ownership must be transferred separately with buyer agreement.
 
 ## Local development
 
@@ -62,3 +58,5 @@ bun run build
 3. Add subscription billing and usage limits.
 4. Add privacy-conscious analytics.
 5. Add a structured knowledge base and source citations for higher-risk categories.
+
+Revenue, customers, traffic and profitability are pre-revenue/zero unless independently verified.
