@@ -1,33 +1,22 @@
-# Life Fix AI Mobile
+# Life Fix AI — Expo native foundation
 
-Cross-platform Android and iOS application for Life Fix AI.
+This branch replaces the prior WebView wrapper with real React Native starter screens. The existing production web app remains untouched on main.
 
-## Architecture
+## Free stack
+- Expo SDK 57 / React Native 0.86 / React 19
+- Supabase Free for Auth, Postgres and private Storage
+- AsyncStorage for Supabase sessions
+- expo-secure-store for a user-owned Gemini/free-tier API key
+- Expo Go testing; no EAS paid-build scripts or paid plugins
 
-This mobile package uses Expo + React Native with the existing production web application embedded in a native WebView. This gives the buyer one mobile distribution package while preserving the existing product logic and web experience.
+## Run
+Open this folder in Expo Snack or run `npx expo start`. Use Snack's dependency picker or `npx expo install --fix` to align packages. Configure this app's Supabase URL and publishable key in `src/lib/supabase.ts` for Snack or local `.env`. Run `supabase/schema.sql` only in its dedicated Supabase project.
 
-## Development
+## Modules
+- Problem intake and categories
+- Household asset and repair project records
+- Step-by-step repair plans and progress
+- Saved solutions
+- Optional user-supplied AI provider key
 
-```bash
-npm install
-npm start
-```
-
-## Android / iOS builds
-
-```bash
-npm run build:android
-npm run build:ios
-# or
-npm run build:all
-```
-
-EAS Build produces installable Android/iOS binaries. Store distribution additionally requires the appropriate Google Play and Apple Developer accounts and signing credentials.
-
-## Existing product
-
-https://life-fix-ai.onrender.com
-
-## Important
-
-The native shell is production-oriented, but final store submission still requires app-store metadata, screenshots, privacy disclosures, developer accounts, signing, and device testing.
+AI output must remain safety-aware and must not be marketed as medical, legal, financial, emergency or professional advice. This is a starter foundation, not a completed or store-tested app.
