@@ -40,7 +40,7 @@ Use Node.js 22.13 or newer. Then clone this branch:
 ```sh
 git clone --branch expo-native-foundation --single-branch https://github.com/bennett2oakley-hue/Life-Fix-AI.git life-fix-ai
 cd life-fix-ai/mobile
-npm install
+npm ci
 npx expo install --fix
 npx expo-doctor@latest
 npx expo start --tunnel
@@ -102,3 +102,5 @@ Expo version references:
 No Supabase project has been created for Life Fix AI. The connected Free organization currently has its two active project slots occupied by Turnover OS and Hotel Easy Pass. The existing paused ISPY4REALLIFE Supabase project has been left untouched and is not being repurposed. This branch keeps the Life Fix schema ready for a future dedicated project; do not run it in another app's database.
 
 Until a dedicated backend is available, Life Fix AI should be implemented as a local-first app. Cross-device cloud sync, user accounts and server-side data are not yet configured.
+
+The checked-in `package-lock.json` pins the full dependency tree; use `npm ci` for repeatable installs.
