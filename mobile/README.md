@@ -95,3 +95,10 @@ mobile/
 Expo version references:
 - SDK 57: https://docs.expo.dev/versions/v57.0.0/
 - Android Expo Go version selector: https://expo.dev/go
+
+
+## Backend status
+
+No Supabase project has been created for Life Fix AI. The connected Free organization currently has its two active project slots occupied by Turnover OS and Hotel Easy Pass. The existing paused ISPY4REALLIFE Supabase project has been left untouched and is not being repurposed. This branch keeps the Life Fix schema ready for a future dedicated project; do not run it in another app's database.
+
+Until a dedicated backend is available, Life Fix AI should be implemented as a local-first app. Cross-device cloud sync, user accounts and server-side data are not yet configured.
