@@ -5,21 +5,22 @@ import { WebView } from "react-native-webview";
 
 const APP_URL = "https://life-fix-ai.onrender.com";
 
-const MobileWebView = WebView as unknown as React.ComponentType<any>;
 
 export default function App() {
   const webViewRef = useRef<WebView>(null);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [canGoBack, setCanGoBack] = useState(false);
 
   useEffect(() => {
     const handler = BackHandler.addEventListener("hardwareBackPress", () => {
-      webViewRef.current?.goBack();
+      if (!canGoBack || !webViewRef.current) return false;
+      webViewRef.current.goBack();
       return true;
     });
     return () => handler.remove();
-  }, []);
+  }, [canGoBack]);
 
   const retry = () => {
     setFailed(false);
@@ -48,11 +49,19 @@ export default function App() {
           <ActivityIndicator size="large" color="#0f766e" />
         </View>
       )}
-      <MobileWebView
-        ref={webViewRef as any}
+      <WebView
+        ref={webViewRef}
         source={{ uri: APP_URL }}
         style={styles.webview}
-        originWhitelist={["https://*", "http://*"]}
+        originWhitelist={["https://life-fix-ai.onrender.com"]}
+        onShouldStartLoadWithRequest={({ url }) => {
+          try {
+            return new URL(url).origin === new URL(APP_URL).origin;
+          } catch {
+            return false;
+          }
+        }}
+        onNavigationStateChange={(navigation) => setCanGoBack(navigation.canGoBack)}
         javaScriptEnabled
         domStorageEnabled
         cacheEnabled
