@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, BackHandler, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { WebView } from "react-native-webview";
+import WebView, { WebViewProps } from "react-native-webview";
+
+const TypedWebView = WebView as unknown as React.ComponentType<WebViewProps & React.RefAttributes<WebView<{}>>>;
 
 const APP_URL = "https://life-fix-ai.onrender.com";
 
 
 export default function App() {
-  const webViewRef = useRef<WebView>(null);
+  const webViewRef = useRef<WebView<{}>>(null);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -49,7 +51,7 @@ export default function App() {
           <ActivityIndicator size="large" color="#0f766e" />
         </View>
       )}
-      <WebView
+      <TypedWebView
         ref={webViewRef}
         source={{ uri: APP_URL }}
         style={styles.webview}
