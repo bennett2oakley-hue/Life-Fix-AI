@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, BackHandler, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, BackHandler, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import WebView, { WebViewProps } from "react-native-webview";
 
@@ -12,7 +12,6 @@ export default function App() {
   const webViewRef = useRef<WebView<{}>>(null);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
   const [canGoBack, setCanGoBack] = useState(false);
 
   useEffect(() => {
@@ -72,15 +71,8 @@ export default function App() {
         setSupportMultipleWindows={false}
         allowsBackForwardNavigationGestures
         onLoadStart={() => { setLoading(true); setFailed(false); }}
-        onLoadEnd={() => { setLoading(false); setRefreshing(false); }}
-        onError={() => { setLoading(false); setRefreshing(false); setFailed(true); }}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={() => { setRefreshing(true); webViewRef.current?.reload(); }}
-            tintColor="#0f766e"
-          />
-        }
+        onLoadEnd={() => setLoading(false)}
+        onError={() => { setLoading(false); setFailed(true); }}
       />
     </SafeAreaView>
   );
