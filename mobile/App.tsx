@@ -3,13 +3,13 @@ import { ActivityIndicator, BackHandler, SafeAreaView, ScrollView, StyleSheet, T
 import { StatusBar } from "expo-status-bar";
 import WebView, { WebViewProps } from "react-native-webview";
 
-const TypedWebView = WebView as unknown as React.ComponentType<WebViewProps & React.RefAttributes<WebView<{}>>>;
+const TypedWebView = WebView as unknown as React.ComponentType<WebViewProps & React.RefAttributes<WebView<object>>>;
 
 const APP_URL = "https://life-fix-ai.onrender.com";
 
 
 export default function App() {
-  const webViewRef = useRef<WebView<{}>>(null);
+  const webViewRef = useRef<WebView<object>>(null);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
   const [canGoBack, setCanGoBack] = useState(false);
