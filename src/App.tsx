@@ -28,7 +28,19 @@ function readHistory(): Fix[] {
     const saved = localStorage.getItem("life-fix-history");
     if (!saved) return [];
     const parsed = JSON.parse(saved);
-    return Array.isArray(parsed) ? parsed : [];
+    return Array.isArray(parsed) ? parsed.filter((item): item is Fix =>
+      item !== null &&
+      typeof item === "object" &&
+      typeof item.id === "string" &&
+      typeof item.problem === "string" &&
+      typeof item.category === "string" &&
+      typeof item.createdAt === "string" &&
+      (item.urgency === "Low" || item.urgency === "Medium" || item.urgency === "High") &&
+      typeof item.title === "string" &&
+      typeof item.summary === "string" &&
+      Array.isArray(item.steps) && item.steps.every((step: unknown) => typeof step === "string") &&
+      Array.isArray(item.watch) && item.watch.every((entry: unknown) => typeof entry === "string")
+    ) : [];
   } catch {
     return [];
   }
@@ -163,7 +175,7 @@ function downloadFix(fix: Fix) {
   document.body.appendChild(a);
   a.click();
   a.remove();
-  URL.revokeObjectURL(url);
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 export default function App() {
@@ -172,13 +184,15 @@ export default function App() {
   const [history, setHistory] = useState<Fix[]>(readHistory);
   const [active, setActive] = useState<Fix | null>(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [storageNotice, setStorageNotice] = useState("");
+  const [actionNotice, setActionNotice] = useState("");
 
   const recent = useMemo(() => history.slice(0, 5), [history]);
 
   function save(fix: Fix) {
     const next = [fix, ...history.filter((item) => item.id !== fix.id)].slice(0, 50);
     setHistory(next);
-    writeHistory(next);
+    setStorageNotice(writeHistory(next) ? "" : "This browser could not save your fix. Your current result is still open, but it may not be here after you close the browser.");
   }
 
   function submit(event: FormEvent) {
@@ -200,19 +214,46 @@ export default function App() {
 
   function deleteFix(id: string) {
     const next = history.filter((fix) => fix.id !== id);
-    setHistory(next);
-    writeHistory(next);
-    if (active?.id === id) setActive(null);
+    const stored = writeHistory(next);
+    if (stored) {
+      setHistory(next);
+      setStorageNotice("");
+      if (active?.id === id) setActive(null);
+    } else {
+      setStorageNotice("This browser could not update saved history. Check available storage and try again.");
+    }
   }
 
   function clearHistory() {
-    setHistory([]);
     try {
       localStorage.removeItem("life-fix-history");
+      setHistory([]);
+      setActive(null);
+      setStorageNotice("");
     } catch {
-      // Storage may be unavailable in privacy-restricted browser modes.
+      setStorageNotice("History could not be cleared because browser storage is unavailable.");
     }
-    setActive(null);
+  }
+
+  async function copyActivePlan() {
+    if (!active) return;
+    const text = [
+      `LIFE FIX AI: ${active.title}`,
+      `Problem: ${active.problem}`,
+      "",
+      "PLAN",
+      ...active.steps.map((step, index) => `${index + 1}. ${step}`),
+      "",
+      "WATCH OUT FOR",
+      ...active.watch.map((item) => `• ${item}`),
+    ].join("\n");
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+      await navigator.clipboard.writeText(text);
+      setActionNotice("Your plan was copied.");
+    } catch {
+      setActionNotice("Clipboard access is unavailable here. Use Save plan to device instead.");
+    }
   }
 
   return (
@@ -229,6 +270,8 @@ export default function App() {
       </header>
 
       <main className="container">
+        {storageNotice && <div className="safety" role="status">{storageNotice}</div>}
+        {actionNotice && <div className="safety" role="status">{actionNotice}</div>}
         {!showHistory && !active && (
           <section className="hero">
             <div className="eyebrow">PRACTICAL HELP, WITHOUT THE RUNAROUND</div>
@@ -289,7 +332,7 @@ export default function App() {
             </div>
             <div className="result-actions">
               <button className="secondary" onClick={() => downloadFix(active)}>Save plan to device</button>
-              <button className="secondary" onClick={() => { navigator.clipboard?.writeText([`LIFE FIX AI: ${active.title}`, `Problem: ${active.problem}`, "", "PLAN", ...active.steps.map((s, i) => `${i + 1}. ${s}`), "", "WATCH OUT FOR", ...active.watch].join("\n")); }}>Copy plan</button>
+              <button className="secondary" onClick={() => void copyActivePlan()}>Copy plan</button>
               <button className="primary" onClick={() => { setActive(null); setShowHistory(false); }}>Fix another problem</button>
             </div>
           </section>

@@ -1,25 +1,27 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, BackHandler, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, BackHandler, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { WebView } from "react-native-webview";
+import WebView, { WebViewProps } from "react-native-webview";
+
+const TypedWebView = WebView as unknown as React.ComponentType<WebViewProps & React.RefAttributes<WebView<object>>>;
 
 const APP_URL = "https://life-fix-ai.onrender.com";
 
-const MobileWebView = WebView as unknown as React.ComponentType<any>;
 
 export default function App() {
-  const webViewRef = useRef<WebView>(null);
+  const webViewRef = useRef<WebView<object>>(null);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
+  const [canGoBack, setCanGoBack] = useState(false);
 
   useEffect(() => {
     const handler = BackHandler.addEventListener("hardwareBackPress", () => {
-      webViewRef.current?.goBack();
+      if (!canGoBack || !webViewRef.current) return false;
+      webViewRef.current.goBack();
       return true;
     });
     return () => handler.remove();
-  }, []);
+  }, [canGoBack]);
 
   const retry = () => {
     setFailed(false);
@@ -48,11 +50,19 @@ export default function App() {
           <ActivityIndicator size="large" color="#0f766e" />
         </View>
       )}
-      <MobileWebView
-        ref={webViewRef as any}
+      <TypedWebView
+        ref={webViewRef}
         source={{ uri: APP_URL }}
         style={styles.webview}
-        originWhitelist={["https://*", "http://*"]}
+        originWhitelist={["https://life-fix-ai.onrender.com"]}
+        onShouldStartLoadWithRequest={({ url }) => {
+          try {
+            return new URL(url).origin === new URL(APP_URL).origin;
+          } catch {
+            return false;
+          }
+        }}
+        onNavigationStateChange={(navigation) => setCanGoBack(navigation.canGoBack)}
         javaScriptEnabled
         domStorageEnabled
         cacheEnabled
@@ -61,15 +71,8 @@ export default function App() {
         setSupportMultipleWindows={false}
         allowsBackForwardNavigationGestures
         onLoadStart={() => { setLoading(true); setFailed(false); }}
-        onLoadEnd={() => { setLoading(false); setRefreshing(false); }}
-        onError={() => { setLoading(false); setRefreshing(false); setFailed(true); }}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={() => { setRefreshing(true); webViewRef.current?.reload(); }}
-            tintColor="#0f766e"
-          />
-        }
+        onLoadEnd={() => setLoading(false)}
+        onError={() => { setLoading(false); setFailed(true); }}
       />
     </SafeAreaView>
   );
