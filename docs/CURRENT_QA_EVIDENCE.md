@@ -1,0 +1,1 @@
+Life Fix AI QA evidence — 2026-11-20
