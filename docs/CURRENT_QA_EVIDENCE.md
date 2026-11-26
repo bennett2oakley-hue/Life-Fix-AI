@@ -14,11 +14,21 @@ GitHub Actions run [45826126815](https://github.com/bennett2oakley-hue/Life-Fix-
 
 The unit tests cover urgent safety routing, money-problem routing, technology category routing, input length limits, malformed saved-history handling, valid history persistence/restoration, and unavailable browser storage.
 
-## Public demo smoke test
+## Public demo verification — 2026-11-26
 
-A read-only browser smoke audit on 2026-11-26 loaded the public demo at https://life-fix-ai.onrender.com. The homepage rendered, category selection and fictional problem submissions generated step-by-step plans, and no console errors, uncaught runtime errors, or unhandled promise rejections were observed during the tested flow.
+A second read-only browser verification loaded the current deployed site at https://life-fix-ai.onrender.com and exercised the current workflows:
 
-This browser audit was performed against the live deployment before the latest source-only fixes were deployed. Re-run the live smoke test after the next deployment.
+- Homepage loaded and displayed category selection and problem entry.
+- A fictional sink problem under Home & Repairs generated a result.
+- My fixes displayed the saved item; reopening it restored the same result.
+- Deleting the item returned the history to its empty state.
+- Save plan to device downloaded `life-fix-plan.txt` (710 bytes).
+- Copy plan button completed without a runtime error, but clipboard contents could not be independently verified because browser clipboard-read permission was unavailable.
+- At a 390px mobile viewport, there was no horizontal overflow.
+- No console errors, JavaScript exceptions, page errors, or unhandled promise rejections were observed.
+- Temporary test data was deleted and browser storage was cleared at the end.
+
+The deployed hashed bundle contained the tested feature implementations. The hosting page did not expose a commit or build identifier, so exact CI-to-deployment commit identity remains unverified.
 
 ## Changes verified in source
 
