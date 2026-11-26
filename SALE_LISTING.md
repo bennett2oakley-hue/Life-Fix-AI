@@ -37,8 +37,11 @@ Life Fix AI addresses a simple consumer problem: people often know something is 
 
 The current build is a client-side product. User problem history is stored locally in the browser rather than sent to a central database.
 
-## Quality evidence — 2026-11-20
-The latest GitHub Actions build for source commit `c978810befef7c593d65173030d9fea50c421b56` completed successfully with a production Vite build, and the clean sale-package workflow completed. This repository does not currently include a separate automated functional unit-test suite. The Render demo was not independently browser-verified during this audit.
+## Quality evidence — 2026-11-26
+
+The latest GitHub Actions source verification completed successfully: 7 automated unit tests passed, the Vite production build passed, and the sale-package workflow completed. Tests cover safety routing, money and technology guidance, input limits, malformed history, local persistence, and unavailable storage.
+
+A read-only browser smoke test loaded the public demo and exercised fictional problem submissions without observed console/runtime errors. That live test preceded the latest source fixes; the updated source is awaiting its next hosting deployment. See [current QA evidence](docs/CURRENT_QA_EVIDENCE.md) for exact scope and limitations.
 
 ## Current status
 **Working MVP / pre-revenue.**
