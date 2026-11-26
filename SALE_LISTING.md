@@ -41,7 +41,7 @@ The current build is a client-side product. User problem history is stored local
 
 The latest GitHub Actions source verification completed successfully: 7 automated unit tests passed, the Vite production build passed, and the sale-package workflow completed. Tests cover safety routing, money and technology guidance, input limits, malformed history, local persistence, and unavailable storage.
 
-A read-only browser smoke test loaded the public demo and exercised fictional problem submissions without observed console/runtime errors. That live test preceded the latest source fixes; the updated source is awaiting its next hosting deployment. See [current QA evidence](docs/CURRENT_QA_EVIDENCE.md) for exact scope and limitations.
+A read-only browser verification of the current public demo exercised saved-plan history, reopen, delete, text download, and a 390px mobile layout without observed console/runtime errors. Clipboard interaction completed, but copied text could not be independently verified because of browser permission. The host does not expose a build ID, so exact commit-to-deployment identity is unverified. See [current QA evidence](docs/CURRENT_QA_EVIDENCE.md) for exact scope and limitations.
 
 ## Current status
 **Working MVP / pre-revenue.**
