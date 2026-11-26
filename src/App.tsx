@@ -1,16 +1,5 @@
 import { FormEvent, useMemo, useState } from "react";
-
-type Fix = {
-  id: string;
-  problem: string;
-  category: string;
-  createdAt: string;
-  urgency: "Low" | "Medium" | "High";
-  title: string;
-  summary: string;
-  steps: string[];
-  watch: string[];
-};
+import { createFix, readFixHistory, writeFixHistory, MAX_PROBLEM_LENGTH, type Fix } from "./lib/fix-engine";
 
 const categories = [
   ["Home & Repairs", "🔧", "Leaks, repairs, appliances, rooms"],
@@ -22,123 +11,6 @@ const categories = [
   ["Organization", "📋", "Tasks, clutter, planning, routines"],
   ["Other", "🧰", "Anything that does not fit a category"],
 ] as const;
-
-function readHistory(): Fix[] {
-  try {
-    const saved = localStorage.getItem("life-fix-history");
-    if (!saved) return [];
-    const parsed = JSON.parse(saved);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-function writeHistory(history: Fix[]) {
-  try {
-    localStorage.setItem("life-fix-history", JSON.stringify(history));
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-function makeFix(problem: string, category: string): Fix {
-  const text = problem.toLowerCase();
-  const urgent = /fire|gas leak|smoke|electrical spark|danger|bleeding|self-harm|suicide|poison/.test(text);
-  const money = category === "Money & Bills" || /bill|rent|debt|money|payment|cash/.test(text);
-  const home = category === "Home & Repairs" || /leak|plumb|toilet|sink|water|heater|roof|wall|door|electric|breaker/.test(text);
-  const tech = category === "Technology" || /phone|computer|wifi|internet|app|password|account|login/.test(text);
-  const work = category === "Work & Jobs" || /job|work|resume|interview|employer|boss/.test(text);
-  const travel = category === "Travel" || /hotel|flight|trip|travel|reservation|airport/.test(text);
-
-  let title = "A practical plan for your problem";
-  let summary = "Let's turn the problem into a few manageable actions, starting with the safest and simplest option.";
-  let steps = [
-    "Write down exactly what is happening, what changed, and what outcome you need.",
-    "Handle the lowest-risk, lowest-cost step first and check whether the problem improves.",
-    "If that does not work, move to the next step rather than changing several things at once.",
-    "Record what worked so you have a repeatable fix next time.",
-  ];
-  let watch = [
-    "Do not spend money before confirming that the purchase or service is actually necessary.",
-    "If the situation becomes unsafe or outside your experience, stop and get qualified help.",
-  ];
-
-  if (urgent) {
-    title = "Safety first";
-    summary = "The details you entered may involve an immediate safety risk. Get people to a safe place and use emergency or professional help when appropriate.";
-    steps = [
-      "Stop the activity that could make the situation worse.",
-      "Move yourself and other people away from the immediate hazard if you can do so safely.",
-      "Contact the appropriate emergency service, utility provider, or qualified professional for the situation.",
-      "Only return to the problem after it has been declared safe.",
-    ];
-    watch = ["Life Fix AI is not an emergency service. Never use this app instead of emergency assistance."];
-  } else if (money) {
-    title = "A money problem you can work through";
-    summary = "Start by protecting essentials, getting the exact numbers, and contacting the company before the situation snowballs.";
-    steps = [
-      "List the amount due, due date, current balance, and the consequence of missing the payment.",
-      "Protect essentials first: housing, utilities, food, transportation, and necessary medical needs.",
-      "Contact the biller and ask about hardship plans, extensions, payment arrangements, or fee waivers.",
-      "Write down the name of the person you spoke with, the date, and any agreement made.",
-    ];
-    watch = ["Avoid high-cost borrowing when a payment arrangement or assistance program is available."];
-  } else if (home) {
-    title = "Troubleshoot it without making it worse";
-    summary = "Start with the obvious, safe checks before buying parts or calling someone out.";
-    steps = [
-      "Shut off power, water, or another supply first if the problem could create a hazard.",
-      "Inspect the simplest likely cause: loose connection, blocked opening, tripped breaker, worn seal, or visible damage.",
-      "Make one small change at a time and test the result.",
-      "If the fix requires specialized tools, permits, or work inside a live electrical or gas system, call a qualified professional.",
-    ];
-    watch = ["Never work on live electrical wiring or gas equipment unless you are qualified to do so."];
-  } else if (tech) {
-    title = "A simple tech troubleshooting path";
-    summary = "We can narrow most everyday tech problems down by checking the basics in order.";
-    steps = [
-      "Restart the device or app and confirm the problem is still happening.",
-      "Check the connection, permissions, storage, updates, and account status.",
-      "Try the same action once on another device or network to isolate the cause.",
-      "If an account is involved, use the service's official recovery or support process rather than sharing your password.",
-    ];
-    watch = ["Never give Life Fix AI or anyone else your passwords, verification codes, or recovery phrases."];
-  } else if (work) {
-    title = "Turn the work problem into a next move";
-    summary = "Get clear on the immediate goal, then create one small action you can complete today.";
-    steps = [
-      "Define the immediate outcome you need: a job lead, interview, conversation, deadline, or problem resolution.",
-      "Gather the information you need before contacting anyone, such as your resume, dates, account details, or notes.",
-      "Take one direct action today, such as applying, following up, asking a clear question, or documenting the issue.",
-      "Keep a short record of who you contacted, when, and what the next step is.",
-    ];
-    watch = ["Do not share sensitive personal information with an unverified employer or recruiter."];
-  } else if (travel) {
-    title = "Get the travel problem under control";
-    summary = "Separate what must be fixed immediately from what can wait until after you are safely on your way.";
-    steps = [
-      "Confirm the reservation, booking number, time, location, and the exact problem.",
-      "Contact the official provider first and ask for the available recovery options.",
-      "Keep screenshots, receipts, confirmation numbers, and names of representatives you speak with.",
-      "If you are stranded or unsafe, prioritize transportation and a safe place to stay before cost optimization.",
-    ];
-    watch = ["Use official airline, hotel, rental, or transportation contact channels when handling account or payment information."];
-  }
-
-  return {
-    id: crypto.randomUUID(),
-    problem,
-    category,
-    createdAt: new Date().toISOString(),
-    urgency: urgent ? "High" : category === "Money & Bills" ? "Medium" : "Low",
-    title,
-    summary,
-    steps,
-    watch,
-  };
-}
 
 function downloadFix(fix: Fix) {
   const lines = [
@@ -163,28 +35,30 @@ function downloadFix(fix: Fix) {
   document.body.appendChild(a);
   a.click();
   a.remove();
-  URL.revokeObjectURL(url);
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 export default function App() {
   const [problem, setProblem] = useState("");
   const [category, setCategory] = useState("Other");
-  const [history, setHistory] = useState<Fix[]>(readHistory);
+  const [history, setHistory] = useState<Fix[]>(readFixHistory);
   const [active, setActive] = useState<Fix | null>(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [storageWarning, setStorageWarning] = useState(false);
+  const [copyStatus, setCopyStatus] = useState("");
 
   const recent = useMemo(() => history.slice(0, 5), [history]);
 
   function save(fix: Fix) {
     const next = [fix, ...history.filter((item) => item.id !== fix.id)].slice(0, 50);
     setHistory(next);
-    writeHistory(next);
+    setStorageWarning(!writeFixHistory(next));
   }
 
   function submit(event: FormEvent) {
     event.preventDefault();
     if (!problem.trim()) return;
-    const fix = makeFix(problem.trim(), category);
+    const fix = createFix(problem.trim(), category);
     save(fix);
     setActive(fix);
     setShowHistory(false);
@@ -201,8 +75,19 @@ export default function App() {
   function deleteFix(id: string) {
     const next = history.filter((fix) => fix.id !== id);
     setHistory(next);
-    writeHistory(next);
+    setStorageWarning(!writeFixHistory(next));
     if (active?.id === id) setActive(null);
+  }
+
+  async function copyPlan(fix: Fix) {
+    const text = [`LIFE FIX AI: ${fix.title}`, `Problem: ${fix.problem}`, "", "PLAN", ...fix.steps.map((step, i) => `${i + 1}. ${step}`), "", "WATCH OUT FOR", ...fix.watch].join("\\n");
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+      await navigator.clipboard.writeText(text);
+      setCopyStatus("Plan copied.");
+    } catch {
+      setCopyStatus("Clipboard access is unavailable. Use Save plan to device instead.");
+    }
   }
 
   function clearHistory() {
@@ -237,13 +122,14 @@ export default function App() {
 
             <form className="fix-card" onSubmit={submit}>
               <label htmlFor="problem">What are you dealing with?</label>
-              <textarea id="problem" value={problem} onChange={(e) => setProblem(e.target.value)} placeholder="Example: My kitchen sink is draining slowly and I don't know what to try first." rows={5} />
+              <textarea id="problem" maxLength={MAX_PROBLEM_LENGTH} value={problem} onChange={(e) => setProblem(e.target.value)} placeholder="Example: My kitchen sink is draining slowly and I don't know what to try first." rows={5} />
               <div className="form-row">
                 <select value={category} onChange={(e) => setCategory(e.target.value)} aria-label="Problem category">
                   {categories.map(([name]) => <option key={name}>{name}</option>)}
                 </select>
                 <button className="primary" disabled={!problem.trim()}>Build my fix →</button>
               </div>
+              <p className="form-hint" aria-live="polite">{problem.length}/{MAX_PROBLEM_LENGTH} characters{storageWarning ? " · Your browser could not save history; your current plan is still available." : ""}</p>
             </form>
 
             <div className="category-section">
@@ -287,10 +173,11 @@ export default function App() {
               <article className="panel"><h2>✓ Step-by-step plan</h2><ol>{active.steps.map((step, i) => <li key={step}><span>{i + 1}</span><p>{step}</p></li>)}</ol></article>
               <article className="panel"><h2>⚠ Things to watch</h2><ul>{active.watch.map((item) => <li key={item}>{item}</li>)}</ul></article>
             </div>
-            <div className="result-actions">
+            <div className="result-actions" aria-live="polite">
               <button className="secondary" onClick={() => downloadFix(active)}>Save plan to device</button>
-              <button className="secondary" onClick={() => { navigator.clipboard?.writeText([`LIFE FIX AI: ${active.title}`, `Problem: ${active.problem}`, "", "PLAN", ...active.steps.map((s, i) => `${i + 1}. ${s}`), "", "WATCH OUT FOR", ...active.watch].join("\n")); }}>Copy plan</button>
-              <button className="primary" onClick={() => { setActive(null); setShowHistory(false); }}>Fix another problem</button>
+              <button className="secondary" onClick={() => void copyPlan(active)}>Copy plan</button>
+              <button className="primary" onClick={() => { setActive(null); setShowHistory(false); setCopyStatus(""); }}>Fix another problem</button>
+              {copyStatus && <p role="status" className="copy-status">{copyStatus}</p>}
             </div>
           </section>
         )}
