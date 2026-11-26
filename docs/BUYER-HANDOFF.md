@@ -1,49 +1,49 @@
 # Life Fix AI Buyer Handoff
 
-## What the buyer receives
+## Asset summary
 
-- Life Fix AI source repository
-- Production Render static-site deployment
-- Responsive web application
-- Problem intake and category routing
-- Safety-aware guidance routing
-- Step-by-step practical plans
-- Local browser fix history
-- Delete/clear history controls
-- Clipboard copy
-- Text-file download
-- Branding and application assets
-- Sale-package workflow
+Life Fix AI turns everyday problems into structured next steps using category-based, deterministic rules.
 
-## Current production demo
+- Live demo: https://life-fix-ai.onrender.com
+- Source repository: https://github.com/bennett2oakley-hue/Life-Fix-AI
+- Stack: React 19, TypeScript, Vite, Bun, browser localStorage
+- Local development: `bun install`, then `bun run dev`
+- Tests: `bun test`
+- Production build: `bun run build`
 
-https://life-fix-ai.onrender.com
+## Included functionality
 
-## Source
+- Responsive problem-intake interface.
+- Categories for home/repairs, money/bills, work/jobs, technology, travel, relationships, organization, and other.
+- Rule-based step generation and basic safety routing.
+- Browser-local saved history, with malformed data validation and a 50-item limit.
+- Individual deletion and clear-history controls.
+- Copy and text-file download actions with user feedback.
+- Input length cap and storage failure messaging.
+- GitHub Actions unit-test, build, and sale-package workflows.
+- Custom branding, source, and buyer documentation.
 
-https://github.com/bennett2oakley-hue/Life-Fix-AI
+## Verified quality
 
-## Current architecture
+- GitHub Actions run [45826126815](https://github.com/bennett2oakley-hue/Life-Fix-AI/actions/runs/45826126815): unit tests and production build passed.
+- GitHub Actions run [45826126111](https://github.com/bennett2oakley-hue/Life-Fix-AI/actions/runs/45826126111): sale-package workflow passed.
+- Public demo smoke test on 2026-11-26 loaded the app and exercised fictional repair and technology examples without observed browser console/runtime errors. The live deployment was not yet refreshed with the latest source fixes at the time of that smoke test.
 
-Life Fix AI is a client-side React/TypeScript/Vite application. User fix history is stored in the browser. The current problem-solving engine is deterministic rule-based guidance. There is no seller API key or paid AI service required for the current build.
+## Known limits to disclose
+
+Despite the product name, the current app does not call a generative AI model or remote AI API. It generates guidance from deterministic rules in the client. History is stored in the user's browser, not synced to a server. There is no account system, server-side storage, subscription billing, or production analytics in the current build. Safety keyword matching is not a substitute for emergency services or professional advice.
 
 ## Transfer checklist
 
-1. Transfer the GitHub repository to the buyer.
-2. Transfer the Render static site to the buyer's Render workspace.
-3. Keep the Render URL temporarily or connect a buyer-owned custom domain.
-4. Run `npm install` and `npm run build` locally to verify the source.
-5. Confirm the production site loads on mobile and desktop.
-6. Remove seller-owned hosting or account credentials after transfer.
+1. Transfer repository ownership or provide a source archive at closing.
+2. Recreate hosting under buyer-owned credentials or transfer the service where supported.
+3. Run `bun install --frozen-lockfile`, `bun test`, and `bun run build`.
+4. Test each category with harmless fictional examples.
+5. Verify history save/delete/clear, clipboard copy, and text download.
+6. Test safety routing using non-graphic sample phrases.
+7. Review privacy, terms, and disclaimers before commercial use.
+8. Re-run the public demo smoke test after deployment.
 
-## Buyer expansion options
+## Sale representation
 
-A future owner can add authenticated accounts, cloud-saved plans, a secure server-side AI provider, subscriptions, usage limits, privacy-conscious analytics, and a cited knowledge base.
-
-## Product boundary
-
-The current release should be marketed as a practical problem-solving software asset / working client-side MVP. It should not be represented as providing professional medical, legal, financial, emergency, or other regulated professional advice.
-
-## Revenue disclosure
-
-The current package is pre-revenue unless the buyer independently verifies otherwise. Do not claim customers, revenue, traffic, or profitability that cannot be documented.
+Market as a pre-revenue, client-side problem-solving MVP / software asset. Do not claim a connected AI model, validated professional advice, cloud-synced history, paying customers, revenue, or profitability unless separately implemented and independently verified.
