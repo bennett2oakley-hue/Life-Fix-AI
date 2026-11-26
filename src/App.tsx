@@ -80,7 +80,7 @@ export default function App() {
   }
 
   async function copyPlan(fix: Fix) {
-    const text = [`LIFE FIX AI: ${fix.title}`, `Problem: ${fix.problem}`, "", "PLAN", ...fix.steps.map((step, i) => `${i + 1}. ${step}`), "", "WATCH OUT FOR", ...fix.watch].join("\\n");
+    const text = [`LIFE FIX AI: ${fix.title}`, `Problem: ${fix.problem}`, "", "PLAN", ...fix.steps.map((step, i) => `${i + 1}. ${step}`), "", "WATCH OUT FOR", ...fix.watch].join("\n");
     try {
       if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
       await navigator.clipboard.writeText(text);
