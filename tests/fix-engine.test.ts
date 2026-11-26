@@ -1,11 +1,12 @@
 import { describe, expect, test } from "bun:test";
 import { createFix, readFixHistory, writeFixHistory, HISTORY_KEY, type Fix, type StorageLike } from "../src/lib/fix-engine";
 
-function memoryStorage(initial: string | null = null): StorageLike & { value: string | null } {
+function memoryStorage(initial: string | null = null): StorageLike & { value: string | null; key: string | null } {
   return {
     value: initial,
-    getItem() { return this.value; },
-    setItem(_key, value) { this.value = value; },
+    key: null,
+    getItem(key) { return key === this.key ? this.value : null; },
+    setItem(key, value) { this.key = key; this.value = value; },
   };
 }
 
@@ -43,7 +44,7 @@ describe("Life Fix engine", () => {
     const storage = memoryStorage();
     const fix = createFix("My flight was cancelled", "Travel");
     expect(writeFixHistory([fix], storage)).toBe(true);
-    expect(storage.value).toContain(HISTORY_KEY);
+    expect(storage.key).toBe(HISTORY_KEY);
     expect(readFixHistory(storage)).toEqual([fix]);
   });
 
